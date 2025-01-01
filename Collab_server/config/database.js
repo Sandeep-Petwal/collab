@@ -9,6 +9,7 @@ const config = {
 }
 
 const sequelize = new Sequelize(config);
+
 // authenticate promise
 sequelize.authenticate()
     .then(() => console.log("DB Authenticated ✅"))

@@ -19,6 +19,11 @@ documents.hasMany(collaborators, { foreignKey: "document_id", as: "collaborators
 //     .catch((error) => console.error("Error syncing models:", error))
 
 
+// documents.sync({ alter: true })
+//     .then(() => console.log("Models synced successfully!"))
+//     .catch((error) => console.error("Error syncing models:", error))
+
+
 
 
 

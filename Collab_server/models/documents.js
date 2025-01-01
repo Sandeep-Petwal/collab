@@ -17,8 +17,8 @@ const documents = sequelize.define("documents", {
         allowNull: false,
     },
     content: {
-        type: DataTypes.JSON,
-        defaultValue: {},
+        type: DataTypes.TEXT,
+        defaultValue : " "
     },
 });
 

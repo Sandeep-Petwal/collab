@@ -28,11 +28,6 @@ app.use("/api/v1", router);
 
 
 
-// database
-// const {syncModels} = require('./models');
-// syncModels();
-
-
 // socket handler
 require('./sockets/socketHandler.js')(io);
 

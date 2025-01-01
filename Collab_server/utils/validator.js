@@ -24,7 +24,7 @@ Validator.registerAsync('exist', async function (value, attribute, req, passes) 
     sequelize.query(`SELECT * FROM ${table} Where ${comumn} = "${value}" LIMIT 1`)
         .then(([results]) => {
             return (results.length == 0)
-                ? passes(false, `${req} doesn't  exists !`)
+                ? passes(false, `${req} doesn't exists !`)
                 : passes()
         }).catch((error) => {
             return passes(false, error.message)

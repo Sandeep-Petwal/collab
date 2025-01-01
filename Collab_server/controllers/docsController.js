@@ -52,20 +52,27 @@ const getAllDocuments = async (req, res) => {
 
 // create a document
 const createDocument = async (req, res) => {
-    const { title = "Untitled Document", content = {} } = req.body;
+    const { title = "Untitled Document", content = " " } = req.body;
 
     const user_id = req?.user?.id
+    console.table({ title, content, user_id });
 
-    const rules = { title: "required|string", content: "required", user_id: "required|numeric|exist:users,id" }
-    let { status, message } = await validate({ title, content, user_id }, rules);
+    const rules = { title: "required|string", user_id: "required|numeric|exist:users,id" }
+    let { status, message } = await validate({ title, user_id }, rules);
     if (!status) return sendResponse(res, 400, message);
-
 
     // unique documetn id 
     const id = uuidv4();
+    
+    try {
+        const document = await documents.create({ id, user_id, title, content });
+        return sendResponse(res, 200, "Document created successfully.", document);
 
-    const document = await documents.create({ id, user_id, title, content });
-    return sendResponse(res, 200, "Document created successfully.", document);
+    } catch (error) {
+        console.log("Errror" + error);
+        res.status(500).json({ success: false, error: "Server error" });
+
+    }
 }
 
 // get a document
@@ -89,4 +96,24 @@ const getDocument = async (req, res) => {
     return sendResponse(res, 200, "Document fetched successfully.", document);
 }
 
-module.exports = { getAllDocuments, createDocument, getDocument }       
+// edit/save document
+const editDocument = async (req, res) => {
+    const { content, title } = req.body;
+    const { id } = req.params;
+    let { status, message } = await validate({ id }, { id: "required|string|exist:documents,id" });
+
+    if (!status) return sendResponse(res, 400, message);
+    if (!content && !title) return sendResponse(res, 400, "Invalid Fields !");
+
+    // data to update
+    let dataToUpdate = {};
+    Object.assign(dataToUpdate, title && { title }, content && { content });
+
+    // update and get the data
+    const [rowCount] = await documents.update(dataToUpdate, { where: { id } });
+    if (rowCount === 0) return sendResponse(res, 404, "Document not found or no changes made.");
+    const updatedDocument = await documents.findOne({ where: { id } });
+    return sendResponse(res, 200, "Document updated successfully.", updatedDocument);
+}
+
+module.exports = { getAllDocuments, createDocument, getDocument, editDocument }       

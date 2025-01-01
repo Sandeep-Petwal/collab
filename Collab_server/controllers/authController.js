@@ -49,7 +49,7 @@ const registerUser = async (req, res) => {
             from: process.env.SMTP_USER,
             to: email,
             subject: `Verify Your Email Address (Valid : 24HR)`,
-            text: `Hello ${name}, Please Verify your email\n${verification_url}`,
+            text: `Hello ${name}, Please Verify your email : \n${verification_url}`,
             html
         });
     } catch (err) {
